@@ -1,5 +1,5 @@
-from schemas.productos import *
-from models.producto import *
+from schemas.tienda_schema import *
+from models.models_database import *
 
 
 def create_producto(new_producto: Crea_producto, db):
@@ -55,3 +55,14 @@ def get_all_tiendas(db):
 def exist_tienda(nombre: str, db):
     usr = db.query(Tienda).filter(Tienda.nombre== nombre).first()
     return usr
+
+
+def get_productos_por_tienda(tienda_id: int,db):
+    result = (
+        db.query(Producto.nombre, Producto.descripcion, Inventario.stock)
+        .join(Inventario, Inventario.id_producto == Producto.id)
+        .join(Tienda, Inventario.id_tienda == Tienda.id)
+        .filter(Tienda.id == tienda_id)
+        .all()
+    )
+    return result

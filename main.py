@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 from database.db import Base, engine
-from routers import productos
+from routers import routers
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-app.include_router(productos.router, tags=["Productos"])
+app.include_router(routers.router, tags=["Productos"])
 
 @app.get("/", tags=["Main"])
 def main():

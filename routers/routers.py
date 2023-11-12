@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Depends
-from schemas.productos import Crea_producto,Crea_inventario
+from schemas.tienda_schema import Crea_producto,Crea_inventario
 from database.db import get_db
 from sqlalchemy.orm import Session
-from controllers.productos import *
+from controllers.tienda_controller import *
+
+##LUEGO SEPARAR ROUTERS SEGUN RESPONSABILIDAD
 
 
 router = APIRouter()
@@ -73,6 +75,20 @@ def create_new_shop(new_tienda: tiendaModel, db: Session = Depends(get_db)):
 def get_all_tiendasd(db: Session = Depends(get_db)):
     return get_all_tiendas(db)
 
+
+# Ruta de ejemplo en FastAPI
+@router.get("/consulta/{tienda_id}")
+async def get_consulta(tienda_id: int, db: Session = Depends(get_db)):
+    try:
+        # Realizar la consulta
+        result = get_productos_por_tienda(tienda_id,db)
+        # Convertir el resultado a JSON
+        data = [{"nombre": nombre, "descripcion": descripcion, "stock": stock} for nombre, descripcion, stock in result]
+        return {"data": data}
+    except Exception as e:
+        print("Esta incorrecto")
+    finally:
+        db.close()
 
 
 
